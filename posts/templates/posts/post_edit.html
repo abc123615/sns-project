@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>投稿編集</title>
+</head>
+<body>
+    <h1>投稿編集</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">保存する</button>
+    </form>
+
+    <a href="{% url 'post_detail' post.pk %}">投稿詳細に戻る</a>
+</body>
+</html>

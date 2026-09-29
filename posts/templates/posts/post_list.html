@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>投稿一覧</title>
+</head>
+<body>
+    
+    <h1>投稿一覧</h1>
+
+    {% if user.is_authenticated %}
+
+    <a href="{% url 'post_create' %}">新規投稿</a>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">ログアウト</button>
+    </form>
+
+{% else %}
+
+    <a href="{% url 'login' %}">ログイン</a>
+    <a href="{% url 'signup' %}">新規登録</a>
+
+{% endif %}
+
+    {% for post in posts %}
+        <div>
+            <p>投稿者：{{ post.author.username }}</p>
+            <p>
+                <a href="{% url 'post_detail' post.pk %}">
+                    {{ post.content }}
+                </a>
+            </p>
+            <p>投稿日：{{ post.created_at }}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>まだ投稿はありません。</p>
+    {% endfor %}
+
+</body>
+</html>
