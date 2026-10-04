@@ -10,6 +10,44 @@
     <p>投稿者：{{ post.author.username }}</p>
     <p>{{ post.content }}</p>
     <p>投稿日：{{ post.created_at }}</p>
+    <form method="post" action="{% url 'like_toggle' post.pk %}">
+    {% csrf_token %}
+        <button type="submit">
+        {% if user in post.likes.all %}
+            いいね解除
+        {% else %}
+            いいね
+        {% endif %}
+        </button>
+    </form>
+
+    <p>いいね数：{{ post.likes.count }}</p>
+
+    <h2>コメント</h2>
+
+    {% for comment in post.comments.all %}
+    <p>
+        {{ comment.author.username }}：
+        {{ comment.content }}
+
+        {% if comment.author == user %}
+
+        <a href="{% url 'comment_edit' comment.pk %}">編集</a>
+    <form method="post" action="{% url 'comment_delete' comment.pk %}">
+        {% csrf_token %}
+        <button type="submit">削除</button>
+    </form>
+{% endif %}
+    </p>
+{% empty %}
+    <p>まだコメントはありません。</p>
+{% endfor %}
+
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+            <button type="submit">コメントする</button>
+        </form>
 
     {% if post.author == user %}
 

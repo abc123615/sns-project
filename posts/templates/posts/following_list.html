@@ -1,0 +1,11 @@
+<h1>{{ profile.user.username }} のフォロー中</h1>
+
+{% for followed_profile in following %}
+    <p>
+        <a href="{% url 'profile' followed_profile.user.username %}">
+            {{ followed_profile.user.username }}
+        </a>
+    </p>
+{% empty %}
+    <p>フォローしているユーザーはいません。</p>
+{% endfor %}

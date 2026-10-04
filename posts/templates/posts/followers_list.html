@@ -1,0 +1,11 @@
+<h1>{{ profile.user.username }} のフォロワー</h1>
+
+{% for follower_profile in followers %}
+    <p>
+        <a href="{% url 'profile' follower_profile.user.username %}">
+            {{ follower_profile.user.username }}
+        </a>
+    </p>
+{% empty %}
+    <p>フォロワーはいません。</p>
+{% endfor %}

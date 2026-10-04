@@ -8,6 +8,12 @@
     
     <h1>投稿一覧</h1>
 
+    <p>
+        <a href="{% url 'post_list' %}">すべての投稿</a>
+    
+        <a href="{% url 'following_posts' %}">フォロー中</a>
+    </p>
+
     {% if user.is_authenticated %}
 
     <a href="{% url 'post_create' %}">新規投稿</a>
@@ -26,13 +32,32 @@
 
     {% for post in posts %}
         <div>
-            <p>投稿者：{{ post.author.username }}</p>
+<p>
+    投稿者：
+    <a href="{% url 'profile' post.author.username %}">
+        {{ post.author.username }}
+    </a>
+</p>
             <p>
                 <a href="{% url 'post_detail' post.pk %}">
                     {{ post.content }}
                 </a>
             </p>
             <p>投稿日：{{ post.created_at }}</p>
+
+            <form method="post" action="{% url 'like_toggle' post.pk %}">
+    {% csrf_token %}
+    <button type="submit">
+        {% if user in post.likes.all %}
+            いいね解除
+        {% else %}
+            いいね
+        {% endif %}
+    </button>
+</form>
+
+<p>いいね数：{{ post.likes.count }}</p>
+
         </div>
         <hr>
     {% empty %}

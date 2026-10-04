@@ -1,0 +1,42 @@
+<h1>{{ profile.user.username }} のプロフィール</h1>
+
+<p>{{ profile.bio }}</p>
+
+{% if user == profile.user %}
+    <p>
+        <a href="{% url 'profile_edit' %}">プロフィールを編集</a>
+    </p>
+{% endif %}
+
+{% if user.is_authenticated and user != profile.user %}
+    <form method="post" action="{% url 'follow_toggle' profile.user.username %}">
+        {% csrf_token %}
+
+        {% if user.profile in profile.followers.all %}
+            <button type="submit">フォロー解除</button>
+        {% else %}
+            <button type="submit">フォローする</button>
+        {% endif %}
+    </form>
+{% endif %}
+
+<div style="display: flex; gap: 20px;">
+    <p>
+        <a href="{% url 'following_list' profile.user.username %}">
+            フォロー中：{{ profile.following.count }}
+        </a>
+    </p>
+    <p>
+        <a href="{% url 'followers_list' profile.user.username %}">
+            フォロワー：{{ profile.followers.count }}
+        </a>
+    </p>
+</div>
+
+<h2>投稿一覧</h2>
+
+{% for post in posts %}
+    <p>{{ post.content }}</p>
+{% empty %}
+    <p>まだ投稿はありません。</p>
+{% endfor %}
