@@ -256,3 +256,19 @@ def comment_delete(request, pk):
     comment.delete()
 
     return redirect('post_detail', pk=post_pk)
+
+
+@login_required
+def user_search(request):
+    query = request.GET.get('q', '')
+
+    if query:
+        users = User.objects.filter(username__icontains=query)
+    else:
+        users = User.objects.none()
+
+    return render(
+        request,
+        'posts/user_search.html',
+        {'users': users, 'query': query}
+    )

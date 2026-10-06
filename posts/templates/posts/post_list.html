@@ -7,11 +7,17 @@
 <body>
     
     <h1>投稿一覧</h1>
+    <p>ログイン中：{{ request.user.username }}</p>
+    <p>
+    <a href="{% url 'profile' request.user.username %}">マイプロフィール</a>
+    </p>
 
     <p>
         <a href="{% url 'post_list' %}">すべての投稿</a>
     
         <a href="{% url 'following_posts' %}">フォロー中</a>
+
+        <a href="{% url 'user_search' %}">ユーザー検索</a>
     </p>
 
     {% if user.is_authenticated %}
