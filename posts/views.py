@@ -5,6 +5,7 @@ from .forms import PostForm, ProfileForm, CommentForm
 from .models import Post, Profile, Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 
 def post_list(request):
@@ -222,6 +223,12 @@ def like_toggle(request, pk):
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+        'liked': post.likes.filter(pk=request.user.pk).exists(),
+        'likes_count': post.likes.count()
+    })
 
     return redirect(request.META.get('HTTP_REFERER', 'post_list'))
 
