@@ -58,6 +58,13 @@ def post_detail(request, pk):
             comment.post = post
             comment.author = request.user
             comment.save()
+
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                'username': comment.author.username,
+                'content': comment.content,
+                })
+
             return redirect('post_detail', pk=post.pk)
 
     return render(

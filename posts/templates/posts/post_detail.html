@@ -25,6 +25,8 @@
 
     <h2>コメント</h2>
 
+<div id="comment-list">
+
     {% for comment in post.comments.all %}
     <p>
         {{ comment.author.username }}：
@@ -43,7 +45,9 @@
     <p>まだコメントはありません。</p>
 {% endfor %}
 
-        <form method="post">
+</div>
+
+        <form method="post" class="comment-form">
         {% csrf_token %}
         {{ form.as_p }}
             <button type="submit">コメントする</button>
@@ -58,5 +62,60 @@
 {% endif %}
 
     <a href="{% url 'post_list' %}">投稿一覧に戻る</a>
+
+<script>
+const commentForm = document.querySelector('.comment-form');
+
+commentForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(commentForm);
+
+    try {
+        const response = await fetch(commentForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('コメントの投稿に失敗しました');
+        }
+
+        const data = await response.json();
+
+        const commentList = document.querySelector('#comment-list');
+
+        const commentElement = document.createElement('p');
+
+        const usernameElement = document.createElement('span');
+        usernameElement.textContent = data.username + '：';
+
+        const contentElement = document.createElement('span');
+        contentElement.textContent = data.content;
+
+        commentElement.appendChild(usernameElement);
+        commentElement.appendChild(contentElement);
+
+        const emptyMessage = commentList.querySelector(
+            '.empty-comment-message'
+        );
+
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
+
+        commentList.appendChild(commentElement);
+
+        commentForm.reset();
+
+    } catch (error) {
+        console.error(error);
+        alert('コメントの投稿中にエラーが発生しました');
+    }
+});
+</script>
 </body>
 </html>
