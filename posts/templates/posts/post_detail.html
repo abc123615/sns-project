@@ -55,9 +55,42 @@
 
     {% if post.author == user %}
 
-    <a href="{% url 'post_edit' post.pk %}">編集する</a>
+    <div class="post-menu">
+        <button type="button" id="menu-button"
+                aria-expanded="false"
+                aria-controls="post-menu-items">
+            ⋯
+        </button>
 
-    <a href="{% url 'post_delete' post.pk %}">削除する</a>
+        <div id="post-menu-items" hidden>
+            <a href="{% url 'post_edit' post.pk %}">
+                編集する
+            </a>
+
+            <button type="button" id="open-delete-modal">
+                削除する
+            </button>
+        </div>
+    </div>
+
+{% endif %}
+
+{% if post.author == user %}
+
+    <dialog id="delete-modal">
+        <h2>投稿を削除しますか？</h2>
+
+        <p>この操作は取り消せません。</p>
+
+        <form method="post" action="{% url 'post_delete' post.pk %}">
+            {% csrf_token %}
+            <button type="submit">削除する</button>
+        </form>
+
+        <button type="button" id="close-delete-modal">
+            キャンセル
+        </button>
+    </dialog>
 
 {% endif %}
 
@@ -117,5 +150,42 @@ commentForm.addEventListener('submit', async function(event) {
     }
 });
 </script>
+
+<script>
+    const menuButton = document.getElementById('menu-button');
+    const menuItems = document.getElementById('post-menu-items');
+
+    const openDeleteModal = document.getElementById('open-delete-modal');
+    const closeDeleteModal = document.getElementById('close-delete-modal');
+    const deleteModal = document.getElementById('delete-modal');
+
+    if (menuButton && menuItems && openDeleteModal &&
+        closeDeleteModal && deleteModal) {
+
+        // 「⋯」ボタンでメニューを開閉
+        menuButton.addEventListener('click', function () {
+            menuItems.hidden = !menuItems.hidden;
+
+            menuButton.setAttribute(
+                'aria-expanded',
+                String(!menuItems.hidden)
+            );
+        });
+
+        // 「削除する」でモーダルを開く
+        openDeleteModal.addEventListener('click', function () {
+            menuItems.hidden = true;
+            menuButton.setAttribute('aria-expanded', 'false');
+
+            deleteModal.showModal();
+        });
+
+        // 「キャンセル」でモーダルを閉じる
+        closeDeleteModal.addEventListener('click', function () {
+            deleteModal.close();
+        });
+    }
+</script>
+
 </body>
 </html>
