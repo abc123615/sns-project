@@ -281,6 +281,17 @@ def user_search(request):
     else:
         users = User.objects.none()
 
+    # 非同期検索の場合はJSONを返す
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        results = [
+            {
+                'username': user.username,
+            }
+            for user in users[:20]
+        ]
+
+        return JsonResponse({'users': results})
+
     return render(
         request,
         'posts/user_search.html',

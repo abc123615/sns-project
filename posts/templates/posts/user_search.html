@@ -1,24 +1,138 @@
 <h1>ユーザー検索</h1>
 
-<form method="get">
-    <input type="text" name="q" value="{{ query }}" placeholder="ユーザー名を入力">
+<form method="get" id="search-form">
+    <input
+        type="text"
+        name="q"
+        id="search-input"
+        value="{{ query }}"
+        placeholder="ユーザー名を検索"
+        autocomplete="off"
+    >
     <button type="submit">検索</button>
 </form>
 
-{% if query %}
-    <h2>検索結果</h2>
+<div id="search-results" aria-live="polite">
+    {% if query %}
+        <h2>検索結果</h2>
 
-    {% for user in users %}
-        <p>
-            <a href="{% url 'profile' user.username %}">
-                {{ user.username }}
-            </a>
-        </p>
-    {% empty %}
-        <p>該当するユーザーはいません。</p>
-    {% endfor %}
-{% endif %}
+        {% for user in users %}
+            <p>
+                <a href="{% url 'profile' user.username %}">
+                    {{ user.username }}
+                </a>
+            </p>
+        {% empty %}
+            <p>該当するユーザーはいません。</p>
+        {% endfor %}
+    {% endif %}
+</div>
 
 <p>
     <a href="{% url 'post_list' %}">投稿一覧に戻る</a>
 </p>
+
+<script>
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    let searchTimer;
+    let searchController;
+
+    // 検索結果を画面に表示する
+    function displayUsers(users) {
+        searchResults.replaceChildren();
+
+        const heading = document.createElement('h2');
+        heading.textContent = '検索結果';
+        searchResults.appendChild(heading);
+
+        if (users.length === 0) {
+            const message = document.createElement('p');
+            message.textContent = '該当するユーザーはいません。';
+            searchResults.appendChild(message);
+            return;
+        }
+
+        users.forEach(function(user) {
+            const paragraph = document.createElement('p');
+            const link = document.createElement('a');
+
+            const profileUrl = "{% url 'profile' '__username__' %}";
+
+            link.href = profileUrl.replace(
+                '__username__',
+            encodeURIComponent(user.username)
+            );
+            link.textContent = user.username;
+
+            paragraph.appendChild(link);
+            searchResults.appendChild(paragraph);
+        });
+    }
+
+    // Djangoに非同期で検索を依頼する
+    async function searchUsers() {
+        const query = searchInput.value.trim();
+
+        if (searchController) {
+            searchController.abort();
+        }
+
+        if (!query) {
+            searchResults.replaceChildren();
+            return;
+        }
+
+        searchController = new AbortController();
+
+        try {
+            const url = new URL(searchForm.action || window.location.href);
+            url.searchParams.set('q', query);
+
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                signal: searchController.signal
+            });
+
+            if (!response.ok) {
+                throw new Error('検索に失敗しました');
+            }
+
+            const data = await response.json();
+            displayUsers(data.users);
+
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error(error);
+                searchResults.textContent = '検索中にエラーが発生しました。';
+            }
+        }
+    }
+
+    // 入力から300ミリ秒後に検索する
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimer);
+
+        if (searchController) {
+            searchController.abort();
+        }
+
+        if (!searchInput.value.trim()) {
+            searchResults.replaceChildren();
+            return;
+        }
+
+        searchTimer = setTimeout(searchUsers, 300);
+    });
+
+    // 検索ボタンでも非同期検索する
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        clearTimeout(searchTimer);
+        searchUsers();
+    });
+</script>
