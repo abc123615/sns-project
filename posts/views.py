@@ -51,6 +51,9 @@ def post_detail(request, pk):
     form = CommentForm()
 
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+
         form = CommentForm(request.POST)
 
         if form.is_valid():
@@ -61,6 +64,7 @@ def post_detail(request, pk):
 
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
+                'id': comment.pk,
                 'username': comment.author.username,
                 'content': comment.content,
                 })

@@ -49,11 +49,15 @@
 
 </div>
 
+{% if user.is_authenticated %}
         <form method="post" class="comment-form">
         {% csrf_token %}
         {{ form.as_p }}
             <button type="submit">コメントする</button>
         </form>
+        {% else %}
+<p>コメントするにはログインが必要です。</p>
+{% endif %}
 
     {% if post.author == user %}
 
@@ -125,6 +129,10 @@ commentForm.addEventListener('submit', async function(event) {
 
         const commentElement = document.createElement('p');
 
+        const editLink = document.createElement('a');
+        editLink.href = "{% url 'comment_edit' 0 %}".replace('/0/', `/${data.id}/`);
+        editLink.textContent = '編集';
+
         const usernameElement = document.createElement('span');
         usernameElement.textContent = data.username + '：';
 
@@ -133,6 +141,28 @@ commentForm.addEventListener('submit', async function(event) {
 
         commentElement.appendChild(usernameElement);
         commentElement.appendChild(contentElement);
+        commentElement.appendChild(document.createTextNode(' '));
+        commentElement.appendChild(editLink);
+
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'POST';
+        deleteForm.action = "{% url 'comment_delete' 0 %}".replace(/0\/$/, `${data.id}/`);
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = commentForm.querySelector(
+        '[name=csrfmiddlewaretoken]'
+        ).value;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'submit';
+        deleteButton.textContent = '削除';
+
+        deleteForm.appendChild(csrfInput);
+        deleteForm.appendChild(deleteButton);
+
+        commentElement.appendChild(deleteForm);
 
         const emptyMessage = commentList.querySelector(
             '.empty-comment-message'

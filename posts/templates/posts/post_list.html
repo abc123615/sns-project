@@ -7,10 +7,14 @@
 <body>
     
     <h1>投稿一覧</h1>
+    {% if user.is_authenticated %}
     <p>ログイン中：{{ request.user.username }}</p>
     <p>
-    <a href="{% url 'profile' request.user.username %}">マイプロフィール</a>
+        <a href="{% url 'profile' request.user.username %}">
+            マイプロフィール
+        </a>
     </p>
+{% endif %}
 
     <p>
         <a href="{% url 'post_list' %}">すべての投稿</a>
