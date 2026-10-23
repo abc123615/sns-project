@@ -71,6 +71,12 @@ def post_detail(request, pk):
 
             return redirect('post_detail', pk=post.pk)
 
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse(
+                {'errors': form.errors.get_json_data()},
+                status=400
+            )
+
     return render(
         request,
         'posts/post_detail.html',

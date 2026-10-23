@@ -20,7 +20,7 @@ class Profile(models.Model):
         User,
         on_delete=models.CASCADE
     )
-    bio = models.TextField(blank=True)
+    bio = models.TextField(max_length=300, blank=True)
 
     following = models.ManyToManyField(
         'self', symmetrical=False, related_name='followers', blank=True

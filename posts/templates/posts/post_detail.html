@@ -119,9 +119,19 @@ commentForm.addEventListener('submit', async function(event) {
             }
         });
 
-        if (!response.ok) {
-            throw new Error('コメントの投稿に失敗しました');
+    if (!response.ok) {
+        if (response.status === 400) {
+            const errorData = await response.json();
+            const errors = errorData.errors?.content;
+
+            if (errors && errors.length > 0) {
+                alert(errors[0].message);
+                return;
+            }
         }
+
+    throw new Error('コメントの投稿に失敗しました');
+}
 
         const data = await response.json();
 
@@ -146,7 +156,7 @@ commentForm.addEventListener('submit', async function(event) {
 
         const deleteForm = document.createElement('form');
         deleteForm.method = 'POST';
-        deleteForm.action = "{% url 'comment_delete' 0 %}".replace(/0\/$/, `${data.id}/`);
+        deleteForm.action = "{% url 'comment_delete' 0 %}".replace('/0/', `/${data.id}/`);
 
         const csrfInput = document.createElement('input');
         csrfInput.type = 'hidden';
