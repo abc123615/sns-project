@@ -1,3 +1,11 @@
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
 <h1>{{ profile.user.username }} のフォロワー</h1>
 
 {% for follower_profile in followers %}
@@ -9,3 +17,12 @@
 {% empty %}
     <p>フォロワーはいません。</p>
 {% endfor %}
+
+<p>
+    <a href="{% url 'profile' profile.user.username %}">
+        プロフィールに戻る
+    </a>
+</p>
+
+</body>
+</html>

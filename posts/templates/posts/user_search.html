@@ -1,3 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール</title>
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}">
+</head>
+<body>
+
 <h1>ユーザー検索</h1>
 
 <form method="get" id="search-form">
@@ -136,3 +147,6 @@
         searchUsers();
     });
 </script>
+
+</body>
+</html>
