@@ -83,6 +83,20 @@
         <p>まだ投稿はありません。</p>
     {% endfor %}
 
+<div class="pagination">
+    {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}">前へ</a>
+    {% endif %}
+
+    <span>
+        {{ posts.number }} / {{ posts.paginator.num_pages }} ページ
+    </span>
+
+    {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}">次へ</a>
+    {% endif %}
+</div>
+
 <script>
 document.querySelectorAll('.like-form').forEach(form => {
     form.addEventListener('submit', async function(event) {

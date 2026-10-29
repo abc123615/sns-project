@@ -6,15 +6,20 @@ from .models import Post, Profile, Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 
 def post_list(request):
     posts = Post.objects.all().order_by('-created_at')
 
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         'posts/post_list.html',
-        {'posts': posts}
+        {'posts': page_obj}
     )
 
 
