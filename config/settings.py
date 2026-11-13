@@ -32,6 +32,8 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 300
+   
 
 ALLOWED_HOSTS = [
     host.strip()
