@@ -5,31 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投稿一覧</title>
-    <link rel="stylesheet" href="{% static 'posts/style.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=3">
 </head>
 <body>
     
     <h1>投稿一覧</h1>
     {% if user.is_authenticated %}
     <p>ログイン中：{{ request.user.username }}</p>
-    <p>
+    <p class="user-profile-search">
         <a href="{% url 'profile' request.user.username %}">
             マイプロフィール
         </a>
+
+        <a href="{% url 'user_search' %}">🔍ユーザー検索</a>
     </p>
+
 {% endif %}
 
-    <p>
-        <a href="{% url 'post_list' %}">すべての投稿</a>
-    
-        <a href="{% url 'following_posts' %}">フォロー中</a>
+<p>
 
-        <a href="{% url 'user_search' %}">ユーザー検索</a>
-    </p>
+<button type="button"
+    data-url="{% url 'post_list' %}"
+    onclick="window.location.href=this.dataset.url"
+    class="post-change">
+    すべての投稿
+</button>
+
+<button type="button"
+    data-url="{% url 'following_posts' %}"
+    onclick="window.location.href=this.dataset.url"
+    class="post-change">
+    フォロー中
+</button>
+
+</p>
+
 
     {% if user.is_authenticated %}
 
-    <a href="{% url 'post_create' %}">新規投稿</a>
+    <a href="{% url 'post_create' %}" class="post-create">＋新規投稿</a>
 
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
@@ -47,15 +61,16 @@
         <div>
 <p>
     投稿者：
-    <a href="{% url 'profile' post.author.username %}">
-        {{ post.author.username }}
+    <a href="{% url 'profile' post.author.username %}" id="post-user">
+        ({{ post.author.username }})
     </a>
 </p>
             <p>
-                <a href="{% url 'post_detail' post.pk %}">
-                    {{ post.content }}
+                <a href="{% url 'post_detail' post.pk %}" id="post-detail">
+                    comment:{{ post.content }}
                 </a>
             </p>
+    <br>
             <p>投稿日：{{ post.created_at }}</p>
 
 <form method="post"
@@ -83,9 +98,16 @@
         <p>まだ投稿はありません。</p>
     {% endfor %}
 
+
 <div class="pagination">
+
     {% if posts.has_previous %}
-        <a href="?page={{ posts.previous_page_number }}">前へ</a>
+        <button type="button"
+            data-url="?page={{ posts.previous_page_number }}"
+            onclick="window.location.href=this.dataset.url"
+            class="page">
+            前へ
+        </button>
     {% endif %}
 
     <span>
@@ -93,9 +115,16 @@
     </span>
 
     {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}">次へ</a>
+        <button type="button"
+            data-url="?page={{ posts.next_page_number }}"
+            onclick="window.location.href=this.dataset.url"
+            class="page">
+            次へ
+        </button>
     {% endif %}
+
 </div>
+
 
 <script>
 document.querySelectorAll('.like-form').forEach(form => {

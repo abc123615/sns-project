@@ -19,3 +19,34 @@ select {
     max-width: 100%;
     box-sizing: border-box;
 }
+
+.post-change {
+    background-color: green;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 100px;
+}
+
+.post-create {
+    color:black
+}
+
+#post-user {
+    color:brown
+}
+
+#post-detail {
+    color: black;
+    text-decoration: none;
+}
+
+.user-profile-search {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page {
+    background-color: blue;
+    color: white;
+}
