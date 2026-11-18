@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=3">
 </head>
 <body>
 
@@ -18,11 +19,12 @@
     <p>フォロワーはいません。</p>
 {% endfor %}
 
-<p>
-    <a href="{% url 'profile' profile.user.username %}">
-        プロフィールに戻る
-    </a>
-</p>
+<button type="button"
+    data-url="{% url 'profile' profile.user.username %}"
+    onclick="window.location.href=this.dataset.url"
+    class="page">
+    プロフィールに戻る
+</button>
 
 </body>
 </html>

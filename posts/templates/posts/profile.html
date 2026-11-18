@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プロフィール</title>
-    <link rel="stylesheet" href="{% static 'posts/style.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=3">
 </head>
 <body>
 
@@ -44,9 +44,12 @@
     </p>
 </div>
 
-<p>
-    <a href="{% url 'post_list' %}">投稿一覧に戻る</a>
-</p>
+<button type="button"
+    data-url="{% url 'post_list' %}"
+    onclick="window.location.href=this.dataset.url"
+    class="page">
+    投稿一覧に戻る
+</button>
 
 <h2>投稿一覧</h2>
 

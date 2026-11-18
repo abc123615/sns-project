@@ -71,10 +71,15 @@
             ⋯
         </button>
 
+
+<!--ボタン確認-->
         <div id="post-menu-items" hidden>
-            <a href="{% url 'post_edit' post.pk %}">
-                編集する
-            </a>
+            <button type="button"
+            data-url="{% url 'post_edit' post.pk %}"
+            onclick="window.location.href=this.dataset.url">
+            編集
+            </button>
+
 
             <button type="button" id="open-delete-modal">
                 削除する
