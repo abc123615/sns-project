@@ -5,15 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投稿詳細</title>
-    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=7">
 </head>
 <body>
     <h1>投稿詳細</h1>
+    <!--投稿は色を変更？-->
+<div class="post-card">
 
-    <p>投稿者：{{ post.author.username }}</p>
+    <p>投稿者：
+    <span class="post-user">
+        ({{ post.author.username }})</p>
+    </span>
     <p>{{ post.content }}</p>
-    <p>投稿日：{{ post.created_at }}</p>
-<form method="post" action="{% url 'like_toggle' post.pk %}" class="like-form">
+    <p class="f-gray">投稿日：{{ post.created_at }}</p>
+
+<form method="post" action="{% url 'like_toggle' post.pk %}" class="like-form" style="display: inline;">
     {% csrf_token %}
     <button type="submit" class="like-button">
         {% if user in post.likes.all %}
@@ -24,9 +30,10 @@
     </button>
 </form>
 
-<p>
+<span>
     いいね数：<span class="like-count">{{ post.likes.count }}</span>
-</p>
+</span>
+</div>
 
     <h2>コメント</h2>
 
@@ -34,16 +41,29 @@
 
     {% for comment in post.comments.all %}
     <p>
+    <div class="comment-gray">
         {{ comment.author.username }}：
         {{ comment.content }}
 
         {% if comment.author == user %}
+    </div>
 
-        <a href="{% url 'comment_edit' comment.pk %}">編集</a>
-    <form method="post" action="{% url 'comment_delete' comment.pk %}">
+<!--js注意。コメントのとき変更が適用失敗-->
+
+    <button
+    type="button"
+    data-url="{% url 'comment_edit' comment.pk %}"
+    onclick="window.location.href=this.dataset.url">
+    編集
+</button>
+
+    <form method="post"
+          action="{% url 'comment_delete' comment.pk %}"
+          style="display: inline;">
         {% csrf_token %}
         <button type="submit">削除</button>
     </form>
+
 {% endif %}
     </p>
 {% empty %}
@@ -153,9 +173,17 @@ commentForm.addEventListener('submit', async function(event) {
 
         const commentElement = document.createElement('p');
 
+        const commentGray = document.createElement('div');
+        commentGray.className = 'comment-gray';
+
         const editLink = document.createElement('a');
         editLink.href = "{% url 'comment_edit' 0 %}".replace('/0/', `/${data.id}/`);
-        editLink.textContent = '編集';
+
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.textContent = '編集';
+
+        editLink.appendChild(editButton);
 
         const usernameElement = document.createElement('span');
         usernameElement.textContent = data.username + '：';
@@ -163,12 +191,14 @@ commentForm.addEventListener('submit', async function(event) {
         const contentElement = document.createElement('span');
         contentElement.textContent = data.content;
 
-        commentElement.appendChild(usernameElement);
-        commentElement.appendChild(contentElement);
-        commentElement.appendChild(document.createTextNode(' '));
+        commentGray.appendChild(usernameElement);
+        commentGray.appendChild(contentElement);
+
+        commentElement.appendChild(commentGray);
         commentElement.appendChild(editLink);
 
         const deleteForm = document.createElement('form');
+        deleteForm.style.display = 'inline';
         deleteForm.method = 'POST';
         deleteForm.action = "{% url 'comment_delete' 0 %}".replace('/0/', `/${data.id}/`);
 

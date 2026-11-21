@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>投稿一覧</title>
-    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'posts/style.css' %}?v=7">
 </head>
 <body>
     
@@ -42,26 +42,29 @@
 
 
     {% if user.is_authenticated %}
-
+<div class="set">
     <a href="{% url 'post_create' %}" class="post-create">＋新規投稿</a>
 
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">ログアウト</button>
     </form>
+</div>
 
 {% else %}
-
+<div class="set">
     <a href="{% url 'login' %}">ログイン</a>
     <a href="{% url 'signup' %}">新規登録</a>
+</div>
 
 {% endif %}
 
     {% for post in posts %}
-        <div>
+<div class="post-card">
+
 <p>
     投稿者：
-    <a href="{% url 'profile' post.author.username %}" id="post-user">
+    <a href="{% url 'profile' post.author.username %}" class="post-user">
         ({{ post.author.username }})
     </a>
 </p>
@@ -71,10 +74,11 @@
                 </a>
             </p>
     <br>
-            <p>投稿日：{{ post.created_at }}</p>
+            <p class="f-gray">投稿日：{{ post.created_at }}</p>
 
 <form method="post"
       action="{% url 'like_toggle' post.pk %}"
+      style="display: inline;"
       class="like-form">
     {% csrf_token %}
 
@@ -87,10 +91,10 @@
     </button>
 </form>
 
-<p>
+<span>
     いいね数：
     <span class="like-count">{{ post.likes.count }}</span>
-</p>
+</span>
 
         </div>
         <hr>

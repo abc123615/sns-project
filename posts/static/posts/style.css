@@ -31,7 +31,7 @@ select {
     color:black
 }
 
-#post-user {
+.post-user {
     color:brown
 }
 
@@ -49,4 +49,45 @@ select {
 .page {
     background-color: blue;
     color: white;
+}
+
+
+/* 投稿1件ごとのカードデザイン */
+.post-card {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0 auto 20px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+.f-gray{
+    font-size: 14px;
+    color: gray;
+}
+
+/* 新規投稿とログアウトの位置 */
+.set {
+    margin-left: 25px;
+    margin-top: -4px;
+    margin-bottom: 16px;
+}
+
+/* パソコン表示のときだけ右に移動 */
+@media screen and (min-width: 768px) {
+    .set {
+        margin-left: 80px;
+    }
+}
+
+.comment-gray{
+    background-color: #CCCCCC;
+     border: 1px solid #dddddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0 auto 20px;
+    width: 90%;
+    box-sizing: border-box;
 }
