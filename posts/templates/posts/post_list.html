@@ -69,8 +69,8 @@
     </a>
 </p>
             <p>
-                <a href="{% url 'post_detail' post.pk %}" id="post-detail">
-                    comment:{{ post.content }}
+                <a style="white-space: pre-line;" href="{% url 'post_detail' post.pk %}" id="post-detail">
+                    {{ post.content }}
                 </a>
             </p>
     <br>
